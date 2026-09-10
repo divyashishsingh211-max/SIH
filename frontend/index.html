@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIH26027 — AI-Powered Block Planning Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <path d="M12 7v5l3 3"/>
+          </svg>
+        </div>
+        <div>
+          <div class="text-sm font-extrabold text-slate-800 dark:text-white">SIH26027</div>
+          <div class="text-[10px] text-slate-500 dark:text-slate-400">Block Planner</div>
+        </div>
+      </div>
+      <button id="sidebarToggle" class="sidebar-toggle-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#dashboard" class="sidebar-link active" data-section="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="#analytics" class="sidebar-link" data-section="analytics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/>
+        </svg>
+        <span>Analytics</span>
+      </a>
+      <a href="#schedule" class="sidebar-link" data-section="schedule">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Schedule</span>
+      </a>
+      <a href="#trains" class="sidebar-link" data-section="trains">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="8" width="18" height="12" rx="2"/><line x1="12" y1="8" x2="12" y2="20"/><circle cx="8" cy="18" r="1"/><circle cx="16" cy="18" r="1"/>
+        </svg>
+        <span>Trains</span>
+      </a>
+      <a href="#maintenance" class="sidebar-link" data-section="maintenance">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>Maintenance</span>
+      </a>
+      <a href="#reports" class="sidebar-link" data-section="reports">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15h6"/>
+        </svg>
+        <span>Reports</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <a href="#settings" class="sidebar-link" data-section="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m5.2-15.2l-4.2 4.2m-2 2l-4.2 4.2M23 12h-6m-6 0H1m15.2 5.2l-4.2-4.2m-2-2l-4.2-4.2"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="rounded-xl bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 p-4 border border-sky-200/50 dark:border-sky-700/50">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="status-dot"></span>
+          <span class="text-xs font-bold text-sky-700 dark:text-sky-300">System Status</span>
+        </div>
+        <div class="text-[10px] text-slate-600 dark:text-slate-400">All APIs operational</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-500">TMS • SMMS • TDMS • COA</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div id="mainContent" class="main-content">
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <button id="mobileSidebarToggle" class="lg:hidden sidebar-toggle-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-lg font-extrabold text-white">AI Maintenance Command Center</h1>
+            <p class="text-xs text-white/70">Smart India Hackathon 2026 • Problem Statement 26027</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="exportBtn" class="action-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span class="hidden sm:inline">Export</span>
+          </button>
+          <button id="notificationsBtn" class="action-btn relative">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <span class="notification-badge">3</span>
+          </button>
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="content-area">
+      <!-- Hero Section -->
+      <section class="hero-gradient reveal">
+        <div class="relative px-6 py-10 sm:px-10 sm:py-12 overflow-hidden">
+          <!-- Railway Track Animation SVG -->
+          <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="railGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:white;stop-opacity:0.3"/>
+                <stop offset="50%" style="stop-color:white;stop-opacity:0.8"/>
+                <stop offset="100%" style="stop-color:white;stop-opacity:0.3"/>
+              </linearGradient>
+            </defs>
+            <path class="rail-line" d="M-20 160 C180 110, 300 190, 520 140 S860 70, 1220 130" fill="none" stroke="url(#railGrad)" stroke-width="4"/>
+            <path class="rail-line" d="M-20 180 C180 130, 300 210, 520 160 S860 90, 1220 150" fill="none" stroke="url(#railGrad)" stroke-width="4" opacity="0.6"/>
+            <!-- Railway sleepers -->
+            <g opacity="0.4" stroke="white" stroke-width="2">
+              <line x1="50" y1="150" x2="50" y2="190"/><line x1="150" y1="140" x2="150" y2="180"/>
+              <line x1="250" y1="155" x2="250" y2="195"/><line x1="350" y1="165" x2="350" y2="205"/>
+              <line x1="450" y1="145" x2="450" y2="185"/><line x1="550" y1="135" x2="550" y2="175"/>
+              <line x1="650" y1="150" x2="650" y2="190"/><line x1="750" y1="140" x2="750" y2="180"/>
+              <line x1="850" y1="155" x2="850" y2="195"/><line x1="950" y1="145" x2="950" y2="185"/>
+              <line x1="1050" y1="135" x2="1050" y2="175"/><line x1="1150" y1="140" x2="1150" y2="180"/>
+            </g>
+          </svg>
+
+          <div class="relative grid md:grid-cols-[1.4fr_0.6fr] gap-6 items-center">
+            <div>
+              <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-3 py-1 text-xs font-semibold tracking-wide text-white shadow-lg">
+                <span class="status-dot"></span>
+                Operational Intelligence Platform
+              </div>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-sky-100">
+                AI-Powered Railway<br class="hidden sm:block"> Block Planning
+              </h1>
+              <p class="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-white/95">
+                Integrate TMS, SMMS, TDMS maintenance signals • Optimize corridor blocks • Protect train operations • Maximize asset availability through unified planning intelligence.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <button id="optimizeButton" class="interactive-btn primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6"/>
+                  </svg>
+                  Re-run Optimization
+                </button>
+                <button id="simulateBtn" class="interactive-btn secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  Simulate Block
+                </button>
+                <button id="downloadBtn" class="interactive-btn secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download Report
+                </button>
+              </div>
+            </div>
+            <div class="hero-card">
+              <div class="text-xs font-semibold uppercase tracking-widest text-white/70 mb-2">Planning Horizon</div>
+              <div class="text-4xl font-extrabold text-white mb-4">7 Days</div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="hero-stat"><div class="hero-stat-value" id="heroTasks">—</div><div class="hero-stat-label">Tasks</div></div>
+                <div class="hero-stat"><div class="hero-stat-value" id="heroHours">—</div><div class="hero-stat-label">Hours</div></div>
+                <div class="hero-stat"><div class="hero-stat-value" id="heroAvailability">—</div><div class="hero-stat-label">Avail</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Cards -->
+      <section id="kpiGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="kpi-card glass-card blue p-5 reveal">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="kpi-label">Total Tasks</div>
+              <div id="totalTasks" class="kpi-value">—</div>
+              <div class="kpi-trend positive">↑ 12% from last week</div>
+            </div>
+            <span class="kpi-icon blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card glass-card amber p-5 reveal">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="kpi-label">Total Hours</div>
+              <div id="totalHours" class="kpi-value">—</div>
+              <div class="kpi-trend neutral">→ Stable</div>
+            </div>
+            <span class="kpi-icon amber">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card glass-card indigo p-5 reveal">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="kpi-label">Block Utilization</div>
+              <div id="utilization" class="kpi-value">—</div>
+              <div class="kpi-trend positive">↑ Optimal range</div>
+            </div>
+            <span class="kpi-icon indigo">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card glass-card emerald p-5 reveal">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="kpi-label">Asset Availability</div>
+              <div id="assetAvail" class="kpi-value">—</div>
+              <div class="kpi-trend positive">↑ Above target</div>
+            </div>
+            <span class="kpi-icon emerald">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Charts with Interactive Controls -->
+      <section id="analytics" class="space-y-4 scroll-mt-24 mb-8">
+        <div class="flex items-end justify-between reveal">
+          <div>
+            <h2 class="section-title">Operational Analytics</h2>
+            <p class="section-subtitle">Live insights from integrated maintenance systems</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="chart-control-btn active" data-range="7d">7D</button>
+            <button class="chart-control-btn" data-range="30d">30D</button>
+            <button class="chart-control-btn" data-range="90d">90D</button>
+          </div>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <div class="chart-card reveal">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Priority Distribution</h3>
+                <p class="chart-subtitle">Maintenance tasks by criticality level</p>
+              </div>
+              <div class="chart-actions">
+                <button class="chart-action-btn" title="Zoom"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+                <button class="chart-action-btn" title="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="priorityChart"></canvas></div>
+          </div>
+          <div class="chart-card reveal">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Asset Availability</h3>
+                <p class="chart-subtitle">Available vs. planned block utilization</p>
+              </div>
+              <div class="chart-actions">
+                <button class="chart-action-btn" title="Zoom"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+                <button class="chart-action-btn" title="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="availabilityChart"></canvas></div>
+          </div>
+          <div class="chart-card reveal">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Workload by Department</h3>
+                <p class="chart-subtitle">Planned maintenance hours across systems</p>
+              </div>
+              <div class="chart-actions">
+                <button class="chart-action-btn" title="Filter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
+                <button class="chart-action-btn" title="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="departmentChart"></canvas></div>
+          </div>
+          <div class="chart-card reveal">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Risk Score Ranking</h3>
+                <p class="chart-subtitle">Top priorities from AI engine</p>
+              </div>
+              <div class="chart-actions">
+                <button class="chart-action-btn" title="Expand"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
+                <button class="chart-action-btn" title="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="riskChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Railway System Overview with Images -->
+      <section class="reveal mb-8">
+        <h2 class="section-title mb-4">Railway Infrastructure Overview</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="infrastructure-card">
+            <div class="infrastructure-icon track">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="6" y1="6" x2="6" y2="10"/><line x1="10" y1="6" x2="10" y2="10"/><line x1="14" y1="6" x2="14" y2="10"/><line x1="18" y1="6" x2="18" y2="10"/>
+                <line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="18" x2="20" y2="18"/><line x1="6" y1="14" x2="6" y2="18"/><line x1="10" y1="14" x2="10" y2="18"/><line x1="14" y1="14" x2="14" y2="18"/><line x1="18" y1="14" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <h3 class="infrastructure-title">Track System (TMS)</h3>
+            <p class="infrastructure-desc">5 sections monitored • Rail integrity • Gauge alignment • Ballast condition</p>
+            <div class="infrastructure-status operational">● Operational</div>
+          </div>
+          <div class="infrastructure-card">
+            <div class="infrastructure-icon signal">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="7" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="17" r="2"/><rect x="8" y="3" width="8" height="20" rx="1" opacity="0.2"/>
+              </svg>
+            </div>
+            <h3 class="infrastructure-title">Signalling (SMMS)</h3>
+            <p class="infrastructure-desc">4 signal boxes • 1 level crossing • Relay systems • Cable networks</p>
+            <div class="infrastructure-status operational">● Operational</div>
+          </div>
+          <div class="infrastructure-card">
+            <div class="infrastructure-icon power">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+              </svg>
+            </div>
+            <h3 class="infrastructure-title">Traction (TDMS)</h3>
+            <p class="infrastructure-desc">2 substations • Power feeds • Cooling systems • 25kV AC supply</p>
+            <div class="infrastructure-status warning">● Maintenance Due</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Tables -->
+      <section class="space-y-8">
+        <!-- Block Schedule -->
+        <section class="glass-card overflow-hidden reveal">
+          <div class="table-header">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="table-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 7v5l3 3"/></svg>
+                </span>
+                <div>
+                  <h2 class="table-title">Optimized Block Schedule</h2>
+                  <p class="table-subtitle">AI-ranked by risk score • Real-time priority updates</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button class="table-action-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                  Filter
+                </button>
+                <button class="table-action-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Task ID</th><th>Asset</th><th>Department</th><th class="text-right">Criticality</th><th class="text-right">Urgency</th><th class="text-right">AI Score</th><th>Priority</th><th class="text-right">Duration</th><th>Status</th></tr></thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Train Timetable -->
+        <section class="glass-card overflow-hidden reveal">
+          <div class="table-header">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="table-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><line x1="12" y1="8" x2="12" y2="20"/><circle cx="8" cy="18" r="1"/><circle cx="16" cy="18" r="1"/></svg>
+                </span>
+                <div>
+                  <h2 class="table-title">Train Timetable &amp; Block Availability</h2>
+                  <p class="table-subtitle">Corridor occupancy • Protected time windows</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Train</th><th>Route</th><th>Departure</th><th>Arrival</th><th>Priority</th></tr></thead>
+              <tbody id="timetableBody"></tbody>
+            </table>
+          </div>
+          <div class="grid grid-cols-2 gap-4 p-6">
+            <div class="stat-box blocked"><div class="stat-label">Blocked Sections</div><div id="blockedCount" class="stat-value">—</div></div>
+            <div class="stat-box available"><div class="stat-label">Available Sections</div><div id="availableCount" class="stat-value">—</div></div>
+          </div>
+        </section>
+
+        <!-- AI Prioritization -->
+        <section class="glass-card overflow-hidden reveal">
+          <div class="table-header">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="table-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.4-1.2 4.5-3 5.7V17a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 017-7z"/><path d="M9 22h6"/></svg>
+                </span>
+                <div>
+                  <h2 class="table-title">AI Prioritization Engine</h2>
+                  <p class="table-subtitle">ML-driven risk assessment • Formula: 0.5C + 0.3U + 0.1H</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Task ID</th><th>Asset</th><th>Dept</th><th class="text-right">Criticality</th><th class="text-right">Urgency</th><th class="text-right">AI Score</th><th>Priority Label</th></tr></thead>
+              <tbody id="prioTableBody"></tbody>
+            </table>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6">
+            <div class="priority-summary critical"><div class="priority-summary-label">CRITICAL</div><div class="priority-summary-count" data-label="CRITICAL">—</div></div>
+            <div class="priority-summary high"><div class="priority-summary-label">HIGH</div><div class="priority-summary-count" data-label="HIGH">—</div></div>
+            <div class="priority-summary medium"><div class="priority-summary-label">MEDIUM</div><div class="priority-summary-count" data-label="MEDIUM">—</div></div>
+            <div class="priority-summary low"><div class="priority-summary-label">LOW</div><div class="priority-summary-count" data-label="LOW">—</div></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-center sm:text-left">
+            <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Smart India Hackathon 2026</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Problem Statement 26027 • AI-Powered Automatic Block Planning</div>
+          </div>
+          <div class="flex gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <a href="#" class="hover:text-sky-600 dark:hover:text-sky-400 transition">Documentation</a>
+            <a href="#" class="hover:text-sky-600 dark:hover:text-sky-400 transition">API Reference</a>
+            <a href="#" class="hover:text-sky-600 dark:hover:text-sky-400 transition">Support</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
